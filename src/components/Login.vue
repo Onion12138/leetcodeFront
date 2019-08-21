@@ -1,145 +1,88 @@
+<!--<template>-->
+<!--  <el-row :gutter="0">-->
+<!--  <el-form  class="login-container" label-position="left" label-width="0px">-->
+<!--    <h3 class="login_title">系统登录</h3>-->
+
+<!--    <el-form-item  style="margin-bottom: 80px">-->
+<!--      <el-input type="text" v-model="nickname" auto-complete="off" placeholder="昵称"></el-input>-->
+<!--    </el-form-item>-->
+
+<!--    <el-form-item style="margin-bottom: 80px">-->
+<!--      <el-input type="password" v-model="password" auto-complete="off" placeholder="密码"></el-input>-->
+<!--    </el-form-item>-->
+
+<!--    <el-tooltip placement="top">-->
+<!--      <div slot="content">-->
+<!--        1. 本网站仅用于学习使用，严禁违法行为！<br/>-->
+<!--        2. 本网站安全系数较低，密码请不要设置为惯用密码！<br/>-->
+<!--        3. 如果您觉得本网站有意义，欢迎加入我们协同开发！<br/>-->
+<!--        4. 如果没有账号，请联系管理员获取！-->
+<!--      </div>-->
+<!--      <el-button style="width: 100% ;margin-bottom: 80px" type="warning">注意事项</el-button>-->
+<!--    </el-tooltip>-->
+
+<!--    <el-form-item style="width: 100% ;margin-bottom: 80px">-->
+<!--      <el-button type="success" @click.native.prevent="submitClick()" style="width: 100%">登录</el-button>-->
+<!--    </el-form-item>-->
+<!--  </el-form>-->
+
+<!--  </el-row>-->
+
+<!--</template>-->
 <template>
-  <el-row :gutter="0">
-<!--    <el-col>-->
-<!--    <el-carousel :interval="0" arrow="never" height="500px" type="card">-->
-<!--      <el-carousel-item v-for="item in dataimg" :key="item">-->
-<!--        <div class="grid-content">-->
-<!--          <el-col :md="12" :offset="6">-->
-<!--            <div>-->
-<!--              <img :src="item.src">-->
-<!--              <p class="italictext">{{item.txt}}</p>-->
-<!--              <span class="service">{{item.txt2}}</span>-->
-<!--              <p class="last">{{item.txt3}}</p>-->
-<!--            </div>-->
-<!--          </el-col>-->
-<!--        </div>-->
-<!--      </el-carousel-item>-->
-<!--    </el-carousel>-->
-<!--    </el-col>-->
-<!--    <el-col>-->
-  <el-form :model="loginForm" :rules="rules" class="login-container" ref="loginForm" label-position="left"
-           label-width="0px" v-loading="loading">
-    <h3 class="login_title">系统登录</h3>
-
-    <el-form-item  prop="email" style="margin-bottom: 80px">
-      <el-input type="text" v-model="loginForm.email" auto-complete="off" placeholder="邮箱"></el-input>
-    </el-form-item>
-
-    <el-form-item prop="password" style="margin-bottom: 80px">
-      <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
-    </el-form-item>
-
-<!--    <el-checkbox class="login_remember" v-model="checked" label-position="left">记住密码</el-checkbox>-->
-
-    <el-form-item style="width: 100% ;margin-bottom: 80px">
-      <el-button type="success" @click.native.prevent="submitClick('loginForm')" style="width: 100%">登录</el-button>
-    </el-form-item>
-
-    <el-form-item>
-      <el-link href="/#/register" icon="el-icon-lollipop" type="primary" style="font-size: large">没有账号？注册</el-link>
-    </el-form-item>
-
-    <el-form-item>
-      <el-link href="/#/reset" icon="el-icon-milk-tea" type="primary" style="font-size: large">忘记密码？重置</el-link>
-    </el-form-item>
-
-    <el-dialog title="请选择身份类型，进行认证" :visible.sync="dialogFormVisible" width="40%">
-      <el-form :model="identity" label-position="right">
-        <el-form-item label="身份类型" :label-width="formLabelWidth">
-          <el-select v-model="identity.status" placeholder="请选择身份类型" style="float:left">
-            <el-option label="在校学生" value="0"></el-option>
-            <el-option label="毕业学生" value="1"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="statusTest(identity.status)">确 定</el-button>
-      </div>
-    </el-dialog>
-
-  </el-form>
-
-  </el-row>
-
+  <div id="app">
+    <login-with-up
+      ref="LoginUp"
+      :loginCallBack="login"
+      :bgImageUrl="bgImageUrl"
+      :systemName="systemName"
+      :loginTitle="loginTitle"
+      :loginNameLabel="loginNameLabel"
+      :loginNameHolder="loginNameHolder"
+      :loginPwdLabel="loginPwdLabel"
+      :loginPwdHolder="loginPwdHolder"
+    >
+    </login-with-up>
+  </div>
 </template>
 <script>
   import {postRequest} from '../utils/api'
-  import {putRequest} from '../utils/api'
+  import loginWithUp from 'login-with-up'
   export default{
     data(){
       return {
-        identity:{
-          status: ''   //0表示在校，1表示毕业
-        },
-        rules: {
-          email: [{required: true, message: '请输入邮箱', trigger: 'blur'},
-            {type: 'email', message: '请输入正确邮箱', trigger: 'blur'}],
-          password: [{required: true, message: '请输入密码', trigger: 'blur'},
-            {min: 6, max: 16, message: '请输入有效的密码', trigger: 'blur'}]
-        },
-        checked: true,
-        loginForm: {
-          username: '',
-          password: ''
-        },
-        loading: false,
-        dataimg: [
-        ],
-        dialogFormVisible: false,
-        formLabelWidth: '80px',
+          formLabelWidth: '80px',
+          bgImageUrl: "",
+          systemName:"Leetcode刷题宝典",
+          loginTitle:"用户登录",
+          loginNameLabel:"用户名",
+          loginNameHolder:"请输入用户名",
+          loginPwdLabel:"密码",
+          loginPwdHolder:"请输入用户密码",
       }
-    },
-    methods: {
-      statusTest(status){
-        let _this=this;
-        // console.log(status);
-        if(status === '0'){
-          _this.$router.replace({path: '/info'});
-          _this.dialogFormVisible = false;
-        }else if(status === '1'){
-          _this.$router.replace({path: '/graduateInfo'});
-        }
+    }, components:{ //注册组件
+          loginWithUp
       },
-      submitClick: function (formName) {
-        this.$refs[formName].validate((valid)=>{
-          if(valid){
+
+    methods: {
+      login: function () {
             let _this = this;
-            this.loading = true;
-            postRequest('/user/login', {},{
-              email: this.loginForm.email,
-              password: this.loginForm.password
+            postRequest('/user/loginOrRegister', {},{
+                nickname: _this.$refs.LoginUp.login.username,
+                password: _this.$refs.LoginUp.login.password,
             }).then(resp=> {
                 if(resp.data.code === 0){
                   sessionStorage.setItem("nickname", resp.data.data.nickname);
-                  sessionStorage.setItem("token",resp.data.data.token);
-                  sessionStorage.setItem("email",resp.data.data.email);
-                  sessionStorage.setItem("universityName",resp.data.data.universityName);
-                  sessionStorage.setItem("majorName",resp.data.data.majorName);
+                  sessionStorage.setItem("hello",resp.data.data.hello);
                   sessionStorage.setItem("role",resp.data.data.role);
-                  _this.loading = false;
-                  if (resp.data.data.role === 'undefined'){
-                    // _this.$alert("请先完成认证");
-                    _this.dialogFormVisible = true;
-                    // _this.$router.replace({path: '/info'});
-                  }
-                  else {
-                    _this.$router.replace({path: '/home'});
-                  }
+                  sessionStorage.setItem("token", resp.data.data.token);
+                  _this.$router.push({path: '/home'});
                 }else{
-                  _this.loading = false;
-                  _this.$message({type: 'error', message: resp.data.msg});
+                  _this.$alert(resp.data.msg);
                 }
-              },
-              resp=> {
-                _this.loading = false;
+              }, resp=> {
                 _this.$alert('服务器繁忙');
               });
-          }else{
-            this.$alert("请正确输入信息");
-          }
-        });
-
       }
     }
   }

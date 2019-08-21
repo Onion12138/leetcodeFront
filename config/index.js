@@ -2,7 +2,7 @@
 // Template version: 1.2.7
 // see http://vuejs-templates.github.io/webpack for documentation.
 
-const path = require('path')
+const path = require('path');
 
 module.exports = {
   dev: {
@@ -11,13 +11,13 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      // '/': {
-      //   target: 'http://localhost:8080/',
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     '^/': ''
-      //   }
-      // }
+      '/api': {
+        target: 'http://localhost:8080/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '',
+        }
+       }
     },
 
     // Various Dev Server settings

@@ -2,19 +2,15 @@
 <!--  <div class="pull-height animated">-->
   <el-container class="home_container" >
     <el-header style="background-color: black">
-      <div class="home_title">大学仕</div>
+      <div class="home_title">Coding Your World!</div>
       <div class="home_userinfoContainer">
         <el-dropdown @command="handleCommand">
   <span class="el-dropdown-link home_userinfo">
     {{currentUserName}}<i class="el-icon-arrow-down el-icon--right home_userinfo"></i>
   </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="systemMessage">
-              系统消息
-              <el-badge :is-dot="true"/>
-            </el-dropdown-item>
-            <el-dropdown-item command="personalInfo">个人信息</el-dropdown-item>
-            <el-dropdown-item command="profile">我的主页</el-dropdown-item>
+            <el-dropdown-item command="comment" divided>给开发人员留言</el-dropdown-item>
+            <el-dropdown-item command="version" divided>查看新功能</el-dropdown-item>
             <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -26,7 +22,6 @@
           default-active="0"
           class="el-menu-horizontal-demo"  router>
           <template v-for="(item,index) in this.$router.options.routes" v-if="!item.hidden">
-<!--            <el-submenu :index="index+''" v-if="item.children.length>1" :key="index">-->
             <el-submenu :index="index+''" v-if="item.children.length>1" :key="index">
               <template slot="title">
                 <i :class="item.iconCls"></i>
@@ -36,15 +31,10 @@
                 {{child.name}}
               </el-menu-item>
             </el-submenu>
-            <template v-else>
-              <el-menu-item :index="item.children[0].path">
-                <i :class="item.children[0].iconCls"></i>
-                <span slot="title">{{item.children[0].name}}</span>
-              </el-menu-item>
-            </template>
           </template>
         </el-menu>
       </el-aside>
+
       <el-container>
         <el-main>
           <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -58,88 +48,50 @@
         </el-main>
       </el-container>
     </el-container>
-    <div>dxs@2019</div>
+    <div>题目来源：力扣（LeetCode）链接：https://leetcode-cn.com/</div>
+    <div>著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。</div>
+    <div>Version: 1.1.4</div>
+    <a href="http://www.beian.miit.gov.cn/">蜀ICP备19025514号</a>
   </el-container>
-<!--  </div>-->
 </template>
 <script>
-  import {getRequest} from '../utils/api'
   export default{
     methods: {
-      handleCommand(command){
-        let _this = this;
-        if(command === 'systemMessage'){
-          _this.$router.replace({path: 'systemMessage'});
-        }
-        if(command === 'personalInfo'){
-          _this.$router.replace({path: 'personalInfo'});
-        }
-        if(command === 'profile'){
-          _this.$router.replace({path: 'profile'});
-        }
-        if (command === 'logout') {
-          this.$confirm('注销登录吗?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(function () {
-            _this.currentUserName = '游客';
-            sessionStorage.clear();
-            _this.$router.replace({path: '/'});
-          }, function () {
-            //取消
-          })
-        }
-      },
-      websocketonopen: function(){
-        console.log("连接成功");
-      },
-      websocketonclose: function(){
-        console.log("连接关闭");
-      },
-      websocketonerror: function(){
-        console.log("连接错误");
-      },
-      websocketonmessage: function(e){
-        this.$notify({
-          title: '消息',
-          message: e.data,
-        });
-        // var da = JSON.parse(e.data);
-        console.log(e);
-      },
-      initWebSocket: function () {
-        this.websock = new WebSocket("ws://localhost:8080/websocket/" + this.email);
-        this.websock.onopen = this.websocketonopen;
-        this.websock.onmessage = this.websocketonmessage;
-        this.websock.onclose = this.websocketonclose;
-        this.websock.onerror = this.websocketonerror;
-      }
+        handleCommand(command) {
+            let _this = this;
+            if (command === 'logout') {
+                this.$confirm('注销登录吗?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                    _this.currentUserName = '游客';
+                    sessionStorage.clear();
+                    _this.$router.replace({path: '/'});
+                })
+            }
+            else if (command === 'comment') {
+                _this.$router.replace({path: 'comment'});
+            }else if(command === 'version'){
+                _this.$router.replace({path: 'version'});
+            }
+        },
     },
-    created() {
-      this.initWebSocket();
-    },
-    destroyed() {
-      this.websocketonclose();
-    },
-    mounted: function () {
-      this.$alert(sessionStorage.getItem('nickname') + '欢迎您', '友情提示', {
-        confirmButtonText: '确定',
-        callback: action => {
-          this.$router.push({path: '/begin'});
-        }
-      });
-      let _this = this;
-      this.currentUserName = sessionStorage.getItem("nickname");
-
-    },
-    data(){
-      return {
-        currentUserName: '',
-        email: sessionStorage.getItem('email')
-      }
-    },
-  }
+      mounted: function () {
+            if(sessionStorage.getItem('nickname') == null)
+                this.$router.replace({path: '/'});
+            else {
+                this.$router.replace({path: '/begin'});
+                this.currentUserName = sessionStorage.getItem("nickname");
+            }
+        },
+        data() {
+            return {
+                currentUserName: '',
+                nickname: sessionStorage.getItem('nickname')
+            }
+        },
+    }
 </script>
 <style>
   .home_container {

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-let base = 'http://localhost:8080/dxs';
+let base = 'http://120.77.176.55/api/';
 export const postRequest = (url, data, params) => {
   return axios({
     method: 'post',
@@ -12,20 +12,11 @@ export const postRequest = (url, data, params) => {
       return data
     }],
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'token': sessionStorage.getItem("token"),
     }
   });
-}
-export const uploadFileRequest = (url, params) => {
-  return axios({
-    method: 'post',
-    url: `${base}${url}`,
-    data: params,
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  });
-}
+};
 export const putRequest = (url, data, params) => {
   return axios({
     method: 'put',
@@ -38,38 +29,18 @@ export const putRequest = (url, data, params) => {
     }],
     headers: {
       'Content-Type': 'application/json',
+      'token': sessionStorage.getItem("token"),
     }
   });
-}
-export const putRequest2 = (url, data, params) => {
-  return axios({
-    method: 'put',
-    url: `${base}${url}`,
-    data: data,
-    params: params,
-    transformRequest: [function (data) {
-      data = JSON.stringify(data);
-      return data;
-    }],
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    }
-  });
-}
-export const deleteRequest = (url,params) => {
-  return axios({
-    method: 'delete',
-    url: `${base}${url}`,
-    params: params,
-  });
-}
+};
 export const getRequest = (url,params) => {
   return axios({
     method: 'get',
     url: `${base}${url}`,
     params: params,
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'token': sessionStorage.getItem("token"),
     }
   });
-}
+};

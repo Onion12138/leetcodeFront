@@ -1,48 +1,69 @@
 <template>
   <el-container class="article_list">
     <el-main class="main">
-      <el-tabs v-model="activeName" @tab-click="handleClick" type="card">
-        <el-tab-pane label="最新发布" name="publishTime">
-          <blog_table state="-1" :showEdit="false" :showDelete="true" :activeName="activeName"></blog_table>
+      <el-tabs v-model="activeName" :tab-position="tabLeft" style="height: 1000px;">
+        <el-tab-pane name="全部" label="全部">
+          <blog_table :activeName="activeName"></blog_table>
         </el-tab-pane>
-        <el-tab-pane label="最新编辑" name="lastEditTime">
-          <blog_table state="1" :showEdit="true" :showDelete="true" :activeName="activeName"></blog_table>
+        <el-tab-pane name="双指针" label="双指针">
+          <blog_table :activeName="activeName"></blog_table>
         </el-tab-pane>
-        <el-tab-pane label="最热" name="visits">
-          <blog_table state="0" :showEdit="true" :showDelete="true" :activeName="activeName"></blog_table>
+        <el-tab-pane name="动态规划" label="动态规划">
+          <blog_table :activeName="activeName"></blog_table>
         </el-tab-pane>
-        <el-tab-pane label="精华" name="thumbs">
-          <blog_table state="2" :showEdit="false" :showDelete="true" :activeName="activeName"></blog_table>
+        <el-tab-pane name="递归与回溯" label="递归与回溯">
+          <blog_table :activeName="activeName"></blog_table>
         </el-tab-pane>
-        <el-tab-pane label="我关注的" name="follow">
-        <blog_table state="-2" :showEdit="false" :showDelete="true" :activeName="activeName"></blog_table>
+        <el-tab-pane name="图论" label="图论">
+          <blog_table :activeName="activeName"></blog_table>
         </el-tab-pane>
-        <el-tab-pane label="我发布的" name="mine">
-          <blog_table state="-3" :showEdit="false" :showDelete="true" :activeName="activeName"></blog_table>
+        <el-tab-pane name="分治" label="分治">
+          <blog_table :activeName="activeName"></blog_table>
+        </el-tab-pane>
+        <el-tab-pane name="贪心" label="贪心">
+          <blog_table :activeName="activeName"></blog_table>
+        </el-tab-pane>
+        <el-tab-pane name="数组与字符串" label="数组与字符串">
+          <blog_table :activeName="activeName"></blog_table>
+        </el-tab-pane>
+        <el-tab-pane name="栈" label="栈">
+          <blog_table :activeName="activeName"></blog_table>
+        </el-tab-pane>
+        <el-tab-pane name="树" label="树">
+          <blog_table :activeName="activeName"></blog_table>
+        </el-tab-pane>
+        <el-tab-pane name="队列" label="队列">
+          <blog_table :activeName="activeName"></blog_table>
+        </el-tab-pane>
+        <el-tab-pane name="查找表" label="查找表">
+          <blog_table :activeName="activeName"></blog_table>
+        </el-tab-pane>
+        <el-tab-pane name="位运算" label="位运算">
+          <blog_table :activeName="activeName"></blog_table>
+        </el-tab-pane>
+        <el-tab-pane name="数学" label="数学">
+          <blog_table :activeName="activeName"></blog_table>
+        </el-tab-pane>
+        <el-tab-pane name="设计" label="设计">
+          <blog_table :activeName="activeName"></blog_table>
+        </el-tab-pane>
+        <el-tab-pane name="逻辑" label="逻辑">
+          <blog_table :activeName="activeName"></blog_table>
         </el-tab-pane>
       </el-tabs>
     </el-main>
-
-
   </el-container>
 
 </template>
 <script>
   import BlogTable from '@/components/BlogTable'
   export default {
-    mounted: function () {
-
-    },
     data() {
       return {
-        activeName: 'publishTime',
-        isAdmin: false
+          tabLeft: 'left',
+          tabRight: 'right',
+          activeName: '全部',
       };
-    },
-    methods: {
-      handleClick(tab, event) {
-//        console.log(tab, event);
-      }
     },
     components: {
       'blog_table': BlogTable,
@@ -50,14 +71,6 @@
   };
 </script>
 <style>
-  .article_list > .header {
-    background-color: #ececec;
-    margin-top: 10px;
-    padding-left: 5px;
-    display: flex;
-    justify-content: flex-start;
-  }
-
   .article_list > .main {
     display: flex;
     flex-direction: column;

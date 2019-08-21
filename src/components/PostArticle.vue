@@ -1,184 +1,268 @@
 <template>
-  <el-container v-loading="loading" class="post-article">
-    <el-header class="header">
-      <el-input v-model="article.title" placeholder="请输入标题..." style="width: 400px;margin-left: 10px"></el-input>
+  <el-container class="post-article">
+    <el-header class="header" height="100px">
+    <div class="block">
+      <div class="demonstration">题目推荐指数</div>
+      <el-rate v-model="answer.star"></el-rate>
+    </div>
+      <el-input
+        type="text"
+        placeholder="题号"
+        v-model="answer.id"
+        maxlength="4"
+        show-word-limit
+        style="width: 100px;margin-left: 10px"
+      ></el-input>
+      <el-input v-model="answer.title" placeholder="请输入标题..." style="width: 400px;margin-left: 10px"></el-input>
+      <el-select v-model="answer.type" placeholder="请选择题目类型">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.label">
+        </el-option>
+      </el-select>
       <el-tag
         :key="tag"
-        v-for="tag in article.dynamicTags"
+        v-for="tag in answer.tags"
         closable
         :disable-transitions="false"
-        @close="handleClose(tag)" style="margin-left: 10px">
+        @close="handleClose(tag)">
         {{tag}}
       </el-tag>
       <el-input
         class="input-new-tag"
-        v-if="tagInputVisible"
-        v-model="tagValue"
+        v-if="inputVisible"
+        v-model="inputValue"
         ref="saveTagInput"
         size="small"
         @keyup.enter.native="handleInputConfirm"
-        @blur="handleInputConfirm">
+        @blur="handleInputConfirm"
+      >
       </el-input>
-      <el-button v-else class="button-new-tag" type="primary" size="small" @click="showInput">+Tag</el-button>
+      <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
     </el-header>
     <el-main class="main">
-      <div id="editor">
-        <mavon-editor style="height: 100%;width: 100%;" ref=md @imgAdd="imgAdd"
-                      @imgDel="imgDel" v-model="article.mdContent"></mavon-editor>
+      <div style="height: 200px">
+        <mavon-editor
+          :toolbarsFlag="false"
+          placeholder="对题目简单描述"
+          defaultOpen="edit"
+          :subfield="false"
+          v-model="answer.description">
+        </mavon-editor>
       </div>
-      <div style="display: flex;align-items: center;margin-top: 15px;justify-content: flex-end">
-        <el-button @click="cancelEdit" v-if="from!=undefined">放弃修改</el-button>
-        <template v-if="from==undefined || from=='draft'">
-          <el-button type="primary" @click="saveBlog()">发表讨论</el-button>
+      <div id="editor" style="height: 500px">
+        <mavon-editor
+          :toolbarsFlag="false"
+          placeholder="输入解答"
+          style="height: 100%; width: 100%"
+          :ishljs="true"
+          v-model="answer.mdContent">
+        </mavon-editor>
+      </div>
+      <div style="height: 50px">
+        <mavon-editor
+          :toolbarsFlag="false"
+          placeholder="笔记总结"
+          defaultOpen="edit"
+          :subfield="false"
+          v-model="answer.note">
+        </mavon-editor>
+      </div>
+      </el-main>
+      <el-footer>
+    <div>
+<!--      <div style="display: flex;align-items: center;margin-top: 15px;justify-content: flex-end">-->
+        <el-button @click="cancelEdit" v-if="from!==undefined">放弃修改</el-button>
+        <template v-if="from===undefined || from==='draft'">
+          <el-button type="primary" @click="saveBlog()">发表题解</el-button>
         </template>
         <template v-else="from==post">
           <el-button type="primary" @click="updateBlog()">保存修改</el-button>
         </template>
       </div>
-    </el-main>
+      </el-footer>
   </el-container>
 </template>
 <script>
   import {postRequest} from '../utils/api'
   import {putRequest} from '../utils/api'
-  import {deleteRequest} from '../utils/api'
   import {getRequest} from '../utils/api'
-  import {uploadFileRequest} from '../utils/api'
-  // Local Registration
   import {mavonEditor} from 'mavon-editor'
   // 可以通过 mavonEditor.markdownIt 获取解析器markdown-it对象
   import 'mavon-editor/dist/css/index.css'
   import {isNotNullORBlank} from '../utils/utils'
 
   export default {
+      data() {
+          return {
+              answer: {
+                  id: "",
+                  star: 5,
+                  type: "",
+                  title: "",
+                  description: "",
+                  tags: [],
+                  mdContent: "",
+                  htmlContent: "",
+                  note: "",
+              },
+              options: [{
+                  value: '选项1',
+                  label: '双指针'
+              }, {
+                  value: '选项2',
+                  label: '动态规划'
+              }, {
+                  value: '选项3',
+                  label: '递归与回溯'
+              }, {
+                  value: '选项4',
+                  label: '图论'
+              }, {
+                  value: '选项5',
+                  label: '分治'
+              },{
+                  value: '选项6',
+                  label: '贪心'
+              }, {
+                  value: '选项7',
+                  label: '数组与字符串'
+              }, {
+                  value: '选项8',
+                  label: '栈'
+              }, {
+                  value: '选项9',
+                  label: '树'
+              }, {
+                  value: '选项10',
+                  label: '队列'
+              },{
+                  value: '选项11',
+                  label: '查找表'
+              }, {
+                  value: '选项12',
+                  label: '位运算'
+              }, {
+                  value: '选项13',
+                  label: '数学'
+              }, {
+                  value: '选项14',
+                  label: '设计'
+              }, {
+                  value: '选项15',
+                  label: '逻辑'
+              }],
+              inputVisible: false,
+              inputValue: '',
+              from: "",
+          }
+      },
     mounted: function () {
-      this.getCategories();
-      var from = this.$route.query.from;
+      let from = this.$route.query.from;
       this.from = from;
-      var _this = this;
-      if (from != null && from != '' && from != undefined) {
-        this.article.id = this.$route.query.id;
-        this.loading = true;
-        getRequest("/discussion",{id: this.article.id}).then(resp=> {
-          _this.loading = false;
-          if (resp.status === 200) {
-            _this.article = resp.data.data;
-            var tags = resp.data.tags;
-            _this.article.dynamicTags = [];
-            //_this.article.mdContent = _this.article.mdContent;
-            for (var i = 0; i < tags.length; i++) {
-              _this.article.dynamicTags.push(tags[i].tagName)
-            }
+      let _this = this;
+      if (from != null && from !== '' && from !== undefined) {
+        this.id = this.$route.query.id;
+        getRequest("/answer/one",{id: this.id}).then(resp=> {
+          if (resp.data.code === 0) {
+            _this.answer = resp.data.data;
           } else {
             _this.$message({type: 'error', message: '页面加载失败!'})
           }
         }, resp=> {
-          _this.loading = false;
           _this.$message({type: 'error', message: '页面加载失败!'})
         })
       }
     },
     components: {
-      mavonEditor
+      mavonEditor,
     },
     methods: {
       cancelEdit(){
         this.$router.go(-1)
       },
       updateBlog(){
-        if (!(isNotNullORBlank(this.article.title, this.article.mdContent))) {
+        if (!(isNotNullORBlank(this.answer.id, this.answer.title, this.answer.mdContent))) {
           this.$message({type: 'error', message: '数据不能为空!'});
           return;
         }
         let _this = this;
-        _this.loading = true;
-        putRequest("/discussion",{
-          id: _this.article.id,
-          title: _this.article.title,
-          mdContent: _this.article.mdContent,
-          htmlContent: _this.$refs.md.d_render,
-        },{token: sessionStorage.getItem("token")})
+        putRequest("/answer/update",{
+            id: _this.answer.id,
+            star: _this.answer.star,
+            title: _this.answer.title,
+            publisher: sessionStorage.getItem("nickname"),
+            description: _this.answer.description,
+            type: _this.answer.type,
+            tags: _this.answer.tags,
+            mdContent: _this.answer.mdContent,
+            note: _this.answer.note,
+        },{})
           .then(resp=>{
-            _this.loading = false;
             if(resp.data.code === 0){
               _this.$alert("修改成功");
               window.bus.$emit('blogTableReload');
               _this.$router.push({path: '/articleList'})
             }else{
-              _this.$alert("修改失败");
+              _this.$alert(resp.data.msg);
             }
           },resp=>{
             _this.$alert("服务器繁忙");
           })
       },
-      saveBlog(state){
-        if (!(isNotNullORBlank(this.article.title, this.article.mdContent))) {
+      saveBlog(){
+        if (!(isNotNullORBlank(this.answer.id, this.answer.title, this.answer.mdContent))) {
           this.$message({type: 'error', message: '数据不能为空!'});
           return;
         }
         let _this = this;
-        _this.loading = true;
-        postRequest("/discussion", {
-          title: _this.article.title,
-          mdContent: _this.article.mdContent,
-          majorName: sessionStorage.getItem("majorName"),
-          htmlContent: _this.$refs.md.d_render,
-        },{token: sessionStorage.getItem("token")})
+        postRequest("/answer/add", {
+          id: _this.answer.id,
+          star: _this.answer.star,
+          title: _this.answer.title,
+          publisher: sessionStorage.getItem("nickname"),
+          description: _this.answer.description,
+          type: _this.answer.type,
+          tags: _this.answer.tags,
+          mdContent: _this.answer.mdContent,
+          note: _this.answer.note,
+        },{})
           .then(resp=> {
-          _this.loading = false;
-          if (resp.data.code === 0 ) {
+          if (resp.data.msg === "success" ) {
             window.bus.$emit('blogTableReload');
             _this.$alert("发表成功");
             _this.$router.replace({path: '/articleList'});
           }else{
-            _this.$alert("未知错误");
+            _this.$alert(resp.data.msg);
           }
         }, resp=> {
-          _this.loading = false;
-          _this.$message({type: 'error', message: state == 0 ? '保存草稿失败!' : '博客发布失败!'});
+          _this.$message({type: 'error', message: '题解发布失败!'});
         })
       },
-      getCategories(){
-        let _this = this;
-        getRequest("/admin/category/all").then(resp=> {
-          _this.categories = resp.data;
-        });
-      },
-      handleClose(tag) {
-        this.article.dynamicTags.splice(this.article.dynamicTags.indexOf(tag), 1);
-      },
-      showInput() {
-        this.tagInputVisible = true;
-        this.$nextTick(_ => {
-          this.$refs.saveTagInput.$refs.input.focus();
-        });
-      },
-      handleInputConfirm() {
-        let tagValue = this.tagValue;
-        if (tagValue) {
-          this.article.dynamicTags.push(tagValue);
+        // 增加tag的操作
+        handleClose(tag) {
+            this.answer.tags.splice(this.answer.tags.indexOf(tag), 1);
+        },
+
+        showInput() {
+            this.inputVisible = true;
+            this.$nextTick(_ => {
+                this.$refs.saveTagInput.$refs.input.focus();
+            });
+        },
+
+        handleInputConfirm() {
+            let inputValue = this.inputValue;
+            if (inputValue) {
+                this.answer.tags.push(inputValue);
+            }
+            this.inputVisible = false;
+            this.inputValue = '';
         }
-        this.tagInputVisible = false;
-        this.tagValue = '';
-      }
     },
-    data() {
-      return {
-        categories: [],
-        tagInputVisible: false,
-        tagValue: '',
-        loading: false,
-        from: '',
-        article: {
-          id: '',
-          dynamicTags: [],
-          title: '',
-          mdContent: '',
-          htmlContent: "",
-          cid: '',
-        }
-      }
-    }
+
   }
 </script>
 <style>
@@ -224,5 +308,21 @@
   }
 
   .post-article {
+  }
+
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
   }
 </style>
