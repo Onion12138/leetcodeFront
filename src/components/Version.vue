@@ -1,7 +1,7 @@
 <template>
 <el-card class="box-card">
   <div slot="header" class="clearfix">
-    <div>Version: 1.1.4</div>
+    <div>Version: 1.1.5</div>
     <div>Developed by Onion</div>
   </div>
   <div v-for="item in content" :key="item.index" class="text item">
@@ -26,6 +26,9 @@
               },{
                   index: 4,
                   item: "4. 登录、主页风格重新设计",
+              },{
+                  index: 5,
+                  item: "5. 题目推荐进行了优化"
               }]
           }
       }

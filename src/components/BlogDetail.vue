@@ -15,7 +15,11 @@
           title="推荐您继续尝试以下题目"
           :visible.sync="drawer"
           direction="ltr">
-          <el-table :data="related">
+          <el-table
+            :data="related"
+            max-height="800"
+            :default-sort = "{prop: 'id', order: 'ascending'}"
+          >
             <el-table-column property="id" label="题号" width="50"></el-table-column>
             <el-table-column property="title" label="标题" width="150">
               <template slot-scope="scope"><span style="color: #409eff;cursor: pointer" @click="seeDetail(scope.row)">{{ scope.row.title}}</span>

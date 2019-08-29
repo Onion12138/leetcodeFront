@@ -8,6 +8,9 @@ import BlogDetail from '@/components/BlogDetail'
 import Begin from '@/components/Begin'
 import Comment from "../components/Comment";
 import Version from "../components/Version";
+import TranslationDetail from "../components/TranslationDetail";
+import PostTranslation from "../components/PostTranslation";
+import TranslationList from "../components/TranslationList";
 Vue.use(Router);
 
 export default new Router({
@@ -88,5 +91,39 @@ export default new Router({
         }
       ]
     }
+    // ,{
+    //   path: '/home',
+    //   component: Home,
+    //   name: '编程书籍',
+    //   iconCls: 'fa fa-file-text-o',
+    //   hidden: false,
+    //   children: [
+    //     {
+    //       path: '/translationDetail',
+    //       name: '原文',
+    //       component: TranslationDetail,
+    //       hidden: true,
+    //       meta: {
+    //         keepAlive: true,
+    //       }
+    //     },{
+    //       path: '/postTranslation',
+    //       name: '发布',
+    //       component: PostTranslation,
+    //       hidden: false,
+    //       meta: {
+    //         keepAlive: false,
+    //       }
+    //     },{
+    //       path: '/translationList',
+    //       name: '文章列表',
+    //       component: TranslationList,
+    //       hidden: false,
+    //       meta: {
+    //         keepAlive: false,
+    //       }
+    //     }
+    //   ]
+    // }
   ]
 })

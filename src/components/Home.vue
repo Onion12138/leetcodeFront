@@ -22,7 +22,7 @@
           default-active="0"
           class="el-menu-horizontal-demo"  router>
           <template v-for="(item,index) in this.$router.options.routes" v-if="!item.hidden">
-            <el-submenu :index="index+''" v-if="item.children.length>1" :key="index">
+            <el-submenu :index="index+''" v-if="item.children.length>=1" :key="index">
               <template slot="title">
                 <i :class="item.iconCls"></i>
                 <span>{{item.name}}</span>
@@ -50,7 +50,7 @@
     </el-container>
     <div>题目来源：力扣（LeetCode）链接：https://leetcode-cn.com/</div>
     <div>著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。</div>
-    <div>Version: 1.1.4</div>
+    <div>Version: 1.1.5</div>
     <a href="http://www.beian.miit.gov.cn/">蜀ICP备19025514号</a>
   </el-container>
 </template>

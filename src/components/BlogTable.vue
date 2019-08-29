@@ -101,7 +101,7 @@
             type="primary" icon="el-icon-edit"
             @click="handleEdit(scope.$index, scope.row)" v-if="scope.row.publisher === nickname">编辑
           </el-button>
-          <el-button type="info" disabled icon="el-icon-warning" v-if="scope.row.publisher!==nickname">没有权限</el-button>
+          <el-button type="info" disabled icon="el-icon-warning" v-if="scope.row.publisher!==nickname">只可查阅</el-button>
         </template>
       </el-table-column>
     </el-table>
